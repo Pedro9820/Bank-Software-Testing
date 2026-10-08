@@ -117,7 +117,7 @@ public class TesteBancoUnidade {
 	}
 	
 	/**
-	 * Tenta remover a conta de um cliente que não está cadastrado
+	 * Tenta remover a conta de um cliente que não está cadastrado.
 	 * @throws Exception
 	 * @author Pedro
 	 */

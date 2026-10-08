@@ -29,3 +29,14 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+      
+    - name: Executar Testes Unitários
+      run: mvn -B test --file pom.xml
+      
+    - name: Publicar Relatório de Testes
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Resultado dos Testes JUnit
+        path: target/surefire-reports/TEST-*.xml
+        reporter: java-junit

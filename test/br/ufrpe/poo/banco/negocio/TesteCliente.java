@@ -83,7 +83,7 @@ public class TesteCliente {
 	 * @author Pedro
 	 */
 	@Test
-	public void equalsClientsIguais() {
+	public void equals_ClientsIguais_Sucesso() {
 		Cliente c1 = new Cliente("Pedro", "12345678911");
 		
 		assertTrue(c1.equals(c1));
@@ -96,7 +96,7 @@ public class TesteCliente {
 	 * @author Pedro
 	 */
 	@Test
-	public void equalsClientsDiferentes() {
+	public void equals_ClientsDiferentes_Sucesso() {
 		Cliente c1 = new Cliente("Pedro", "12345678911");
 		Cliente c2 = new Cliente("Paulo", "12345678910");
 		
@@ -110,7 +110,7 @@ public class TesteCliente {
 	 * @author Pedro
 	 */
 	@Test
-	public void equalsClientsComConta() {
+	public void equals_ClientsComConta_Sucesso() {
 		Cliente c1 = new Cliente("Pedro", "12345678911");
 		Conta c2 = new Conta("1", 100);
 		
@@ -171,7 +171,7 @@ public class TesteCliente {
 	 * 
 	 */
 	@Test
-	public void removerTodasContas() throws ClienteJaPossuiContaException {
+	public void removerTodasContas_ExemploValido_Sucesso() throws ClienteJaPossuiContaException {
 		Cliente c = new Cliente("Pedro", "12345678911");
 		Conta conta = new Conta("1", 123);
 		

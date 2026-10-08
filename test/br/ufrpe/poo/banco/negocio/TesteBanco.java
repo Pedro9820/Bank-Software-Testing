@@ -180,7 +180,7 @@ public class TesteBanco {
 		Cliente cliente = new Cliente("Pedro", cpf);
 		banco.cadastrarCliente(cliente);
 		banco.associarConta(cliente.getCpf(), c.getNumero());;
-		assertTrue(banco.procurarCliente(cpf).getContas().contains(c.getNumero()));
+		assertTrue("A associação de contas não esta funcionando corretamente",banco.procurarCliente(cpf).getContas().contains(c.getNumero()));
 	}
 	
 	/**
@@ -265,7 +265,7 @@ public class TesteBanco {
 		banco.cadastrarCliente(c);
 		banco.removerCliente(c.getCpf());
 		
-		assertNull(banco.procurarCliente(c.getCpf()));
+		assertNull("A remoção de clientes não está funcionando corretamente.",banco.procurarCliente(c.getCpf()));
 	}
 	
 	/**

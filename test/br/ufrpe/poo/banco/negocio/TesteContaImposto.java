@@ -35,7 +35,7 @@ public class TesteContaImposto {
 	 * @throws SaldoInsuficienteException
 	 */
 	@Test(expected = SaldoInsuficienteException.class)
-	public void debitarSaldoInsuficiente() throws SaldoInsuficienteException{
+	public void debitar_SaldoInsuficiente_LevantarExcecao() throws SaldoInsuficienteException{
 		ContaImposto c = new ContaImposto("3", 1000);
 		c.debitar(1001);
 		
@@ -47,7 +47,7 @@ public class TesteContaImposto {
 	 * @throws SaldoInsuficienteException
 	 */
 	@Test
-	public void debitarSaldoExato() throws SaldoInsuficienteException{
+	public void debitar_SaldoExato_Sucesso() throws SaldoInsuficienteException{
 		ContaImposto c = new ContaImposto("3", 1000);
 		c.debitar(1000);
 		

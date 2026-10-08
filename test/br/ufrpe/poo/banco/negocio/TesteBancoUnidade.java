@@ -3,12 +3,20 @@ package br.ufrpe.poo.banco.negocio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
+import br.ufrpe.poo.banco.dados.IRepositorioClientes;
 import br.ufrpe.poo.banco.dados.IRepositorioContas;
+import br.ufrpe.poo.banco.exceptions.ClienteJaCadastradoException;
+import br.ufrpe.poo.banco.exceptions.ClienteJaPossuiContaException;
+import br.ufrpe.poo.banco.exceptions.ClienteNaoCadastradoException;
+import br.ufrpe.poo.banco.exceptions.ClienteNaoPossuiContaException;
+import br.ufrpe.poo.banco.exceptions.ContaJaAssociadaException;
 import br.ufrpe.poo.banco.exceptions.ContaJaCadastradaException;
 import br.ufrpe.poo.banco.exceptions.ContaNaoEncontradaException;
 import br.ufrpe.poo.banco.exceptions.RenderBonusContaEspecialException;
@@ -24,7 +32,8 @@ public class TesteBancoUnidade {
 
 	public static Banco getBancoMock() {
 		IRepositorioContas contasMock = mock(IRepositorioContas.class);
-		Banco bancoMock = new Banco(null, contasMock);
+		IRepositorioClientes clientesMock = mock(IRepositorioClientes.class);
+		Banco bancoMock = new Banco(clientesMock, contasMock);
 		return bancoMock;
 	}
 
@@ -83,6 +92,67 @@ public class TesteBancoUnidade {
 		banco.renderBonus(conta);	
 		assertEquals(201, conta.getSaldo(),0);
 	}
+	/**
+	 * Utiliza entradas válidas para testar a remoção de uma conta
+	 * @throws Exception
+	 * @author Pedro
+	 */
+	@Test
+	public void removerConta_Sucesso() throws Exception {
+	    Banco banco = getBancoMock();
+	    
+	    Cliente cliente = new Cliente("Pedro", "12345678911");
+	    ContaAbstrata conta = new Conta("1", 120);
+	    
+	    cliente.adicionarConta(conta.getNumero());
+	    
+	    when(banco.clientes.procurar(cliente.getCpf())).thenReturn(cliente);
+	    when(banco.contas.procurar(conta.getNumero())).thenReturn(conta);
+	    when(banco.contas.remover(conta.getNumero())).thenReturn(true);
 
+	    banco.removerConta(cliente, conta.getNumero());
+
+	    verify(banco.clientes).atualizar(cliente);
+	    verify(banco.contas, times(2)).remover(conta.getNumero());
+	}
+	
+	/**
+	 * Tenta remover a conta de um cliente que não está cadastrado
+	 * @throws Exception
+	 * @author Pedro
+	 */
+	@Test(expected = ClienteNaoCadastradoException.class)
+	public void removerConta_ClienteInvalido_LancaExcecao() throws Exception {
+	    Banco banco = getBancoMock();
+	    
+	    Cliente cliente = new Cliente("Pedro", "12345678911");
+	   
+	    when(banco.clientes.procurar(cliente.getCpf())).thenReturn(null);
+
+	    banco.removerConta(cliente, "1");
+	}
+
+	/**
+	 * Utiliza um cliente válido para remover uma conta que não existe
+	 * @throws Exception
+	 * @author Pedro
+	 */
+	@Test(expected = ContaNaoEncontradaException.class)
+	public void removerConta_LancaExcecao() throws Exception {
+	    Banco banco = getBancoMock();
+	    
+	    Cliente cliente = new Cliente("Pedro", "12345678911");
+	    ContaAbstrata conta = new Conta("1", 120);
+	    ContaAbstrata conta2 = new Conta("2", 120);
+	    
+	    cliente.adicionarConta(conta.getNumero());
+	   
+	    
+	    when(banco.clientes.procurar(cliente.getCpf())).thenReturn(cliente);
+	    when(banco.contas.procurar(conta2.getNumero())).thenReturn(null);
+
+	    banco.removerConta(cliente, conta2.getNumero());
+	}
+	
 
 }

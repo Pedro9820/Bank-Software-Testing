@@ -133,7 +133,7 @@ public class TesteBancoUnidade {
 	}
 
 	/**
-	 * Utiliza um cliente válido para remover uma conta que não existe
+	 * Utiliza um cliente válido para remover uma conta que não existe.
 	 * @throws Exception
 	 * @author Pedro
 	 */

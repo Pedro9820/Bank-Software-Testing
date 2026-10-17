@@ -1,5 +1,13 @@
 # Bank-Software-Testing
 Atividade para a disciplina Teste de Software 2026.2 da Universidade Federal Rural de Pernambuco.
+**Aluno:** Pedro Henrique Apolinario da Silva
+
+## Aviso
+Todos os testes criados receberam a tag @author Pedro, para facilitar a visualização do código escrito e mudanças. As classes alteradas foram as seguintes:
+- Banco
+- Cliente
+- ContaAbstrata
+- ContaImposto
 
 ## EclEmma
 

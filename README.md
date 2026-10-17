@@ -17,9 +17,27 @@ Atividade para a disciplina Teste de Software 2026.2 da Universidade Federal Rur
 
 <img width="800" height="600" alt="pitest mutant report" src="https://github.com/user-attachments/assets/df5c36bf-6484-4504-8dbb-a34312454339" />
 
-## Resultado da execução da suite de testes
+## Resultado da execução da suíte de testes
 ### Resumo da Suíte (`TesteBanco`)
 - **Total de Testes Executados:** 89
 - **Sucessos:** 85
 - **Erros (`Errors`):** 0
 - **Falhas (`Failures`):** 4
+
+### Registro de falhas 
+
+1. **`transferir_ContasIguais_LevantamentoExcecao`**
+   - **Falha:** A transferência entre uma conta e ela mesma não levanta exceção.
+   - **Issue:** [#4](https://github.com/Pedro9820/Bank-Software-Testing/issues/4)
+
+2. **`transferir_ContasInexistentes_LevantamentoExcecao`**
+   - **Falha:** A transferência com contas inexistentes falha sem retornar erro.
+   - **Issue:** [#3](https://github.com/Pedro9820/Bank-Software-Testing/issues/3)
+
+3. **`creditar_VerificarPersistencia_Falha`**
+   - **Falha:** A alteração de saldo via crédito não é salva no arquivo/repositório após a execução.
+   - **Issue:** [#2](https://github.com/Pedro9820/Bank-Software-Testing/issues/2)
+
+4. **`removerCliente_ClienteMultiplasContas_RemocaoContasSucesso`**
+   - **Falha:** Ocorre falha na remoção quando o cliente possui múltiplas contas associadas.
+   - **Issue:** [#1](https://github.com/Pedro9820/Bank-Software-Testing/issues/1)

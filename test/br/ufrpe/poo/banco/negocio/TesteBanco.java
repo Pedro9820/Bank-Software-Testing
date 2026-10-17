@@ -26,6 +26,7 @@ import br.ufrpe.poo.banco.exceptions.RenderBonusContaEspecialException;
 import br.ufrpe.poo.banco.exceptions.RenderJurosPoupancaException;
 import br.ufrpe.poo.banco.exceptions.RepositorioException;
 import br.ufrpe.poo.banco.exceptions.SaldoInsuficienteException;
+import br.ufrpe.poo.banco.exceptions.TransferenciaInvalidaException;
 import br.ufrpe.poo.banco.exceptions.ValorInvalidoException;
 
 public class TesteBanco {
@@ -122,6 +123,27 @@ public class TesteBanco {
 		ContaAbstrata conta = new Conta("1", 50);
 		banco.cadastrar(conta);
 		banco.debitar(conta, -50);
+	}
+	
+	/**
+	 * Utiliza o banco para debitar o valor em uma conta e verifica se salva em arquivo corretamente
+	 * @throws RepositorioException
+	 * @throws ValorInvalidoException
+	 * @throws ContaJaCadastradaException 
+	 * @throws InicializacaoSistemaException 
+	 * @throws SaldoInsuficienteException 
+	 * @author Pedro
+	 */
+	@Test
+	public void debitar_VerificarSalvamentoEmArquivo_Sucesso() throws RepositorioException, ValorInvalidoException, ContaJaCadastradaException, InicializacaoSistemaException, SaldoInsuficienteException {
+		Conta c = new Conta("1", 100);
+		banco.cadastrar(c);
+		banco.debitar(c, 10);
+		
+		Banco.instance = null;
+		banco = Banco.getInstance();
+		
+		assertEquals("O debito não está sendo salvo corretamente.", 90, banco.procurarConta(c.getNumero()).getSaldo(), 0.1);
 	}
 	
 	
@@ -297,7 +319,7 @@ public class TesteBanco {
 	 * @throws ClienteJaPossuiContaException 
 	 * @throws ContaJaCadastradaException 
 	 */
-	@Ignore("Falha conhecida registrada na Issue #1")
+	//@Ignore("Falha conhecida registrada na Issue #1")
 	@Test
 	public void removerCliente_ClienteMultiplasContas_RemocaoContasSucesso() throws RepositorioException, ClienteJaCadastradoException, ClienteNaoCadastradoException, ContaNaoEncontradaException, ClienteNaoPossuiContaException, ClienteJaPossuiContaException, ContaJaAssociadaException, ContaJaCadastradaException {
 		Cliente c = new Cliente(NOME, CPF);
@@ -392,6 +414,27 @@ public class TesteBanco {
 		banco.associarConta(c1.getCpf(), conta.getNumero());
 		
 		banco.removerConta(c2, conta.getNumero());
+	}
+	/**
+	 * Tentar associar o cliente a uma conta que já possui.
+	 * @throws RepositorioException
+	 * @throws ContaJaCadastradaException
+	 * @throws ClienteNaoCadastradoException
+	 * @throws ContaNaoEncontradaException
+	 * @throws ClienteJaPossuiContaException
+	 * @throws ContaJaAssociadaException
+	 * @throws ClienteJaCadastradoException
+	 * @author Pedro
+	 */
+	@Test(expected = ClienteJaPossuiContaException.class)
+	public void associarConta_MesmaContaMesmoCliente_LevantamentoExcecao() throws RepositorioException, ContaJaCadastradaException, ClienteNaoCadastradoException, ContaNaoEncontradaException, ClienteJaPossuiContaException, ContaJaAssociadaException, ClienteJaCadastradoException{
+		Conta c1 = new Conta("1", 150);
+		Cliente cliente = new Cliente("Pedro", "12345678911");
+		banco.cadastrarCliente(cliente);
+		banco.cadastrar(c1);
+		
+		banco.associarConta(cliente.getCpf(), c1.getNumero());
+		banco.associarConta(cliente.getCpf(), c1.getNumero());
 	}
 	
 	/**
@@ -535,6 +578,27 @@ public class TesteBanco {
 	}
 	
 	/**
+	 * Utiliza o banco para creditar o valor em uma conta e verifica se salva em arquivo corretamente
+	 * @throws RepositorioException
+	 * @throws ValorInvalidoException
+	 * @throws ContaJaCadastradaException 
+	 * @throws InicializacaoSistemaException 
+	 * @author Pedro
+	 */
+	//@Ignore("Falha conhecida registrada em issue")
+	@Test
+	public void creditar_VerificarSalvamentoEmArquivo_Sucesso() throws RepositorioException, ValorInvalidoException, ContaJaCadastradaException, InicializacaoSistemaException {
+		Conta c = new Conta("1", 100);
+		banco.cadastrar(c);
+		banco.creditar(c, 10);
+		
+		Banco.instance = null;
+		banco = Banco.getInstance();
+		
+		assertEquals("O crédito não esta sendo salvo corretamente.", 110, banco.procurarConta(c.getNumero()).getSaldo(), 0.1);
+	}
+	
+	/**
 	 * Verifica o crédito de um valor negativo através de um banco
 	 * @throws RepositorioException
 	 * @throws ValorInvalidoException
@@ -592,7 +656,7 @@ public class TesteBanco {
 	 * @author PedroPC
 	 */
 	@Test(expected = AtualizacaoNaoRealizadaException.class)
-	public void atualizarCliente_ClienteInexistente_LevanamentoExcecao() throws RepositorioException, ClienteJaCadastradoException, AtualizacaoNaoRealizadaException {
+	public void atualizarCliente_ClienteInexistente_LevantamentoExcecao() throws RepositorioException, ClienteJaCadastradoException, AtualizacaoNaoRealizadaException {
 		Cliente c = new Cliente("Pedro", "12345678911");
 		banco.atualizarCliente(c);
 		
@@ -627,6 +691,44 @@ public class TesteBanco {
 		banco.cadastrarCliente(c2);
 		
 		
+	}
+	
+	/**
+	 * Verifica a transferencia em contas inexistentes
+	 * @throws RepositorioException
+	 * @throws SaldoInsuficienteException
+	 * @throws ContaJaCadastradaException
+	 * @throws ValorInvalidoException
+	 * @autho Pedro
+	 */
+	//@Ignore("Falha conhecida registrada em issue")
+	@Test(expected = ContaNaoEncontradaException.class)
+	public void transferir_ContasInexistentes_LevantamentoExcecao() throws RepositorioException,
+			SaldoInsuficienteException, ContaJaCadastradaException, ValorInvalidoException {
+
+		ContaAbstrata conta1 = new Conta("1", 100);
+		ContaAbstrata conta2 = new Conta("2", 200);
+		banco.transferir(conta1, conta2, 50);
+	
+	
+	}
+	/**
+	 * 
+	 * @throws RepositorioException
+	 * @throws SaldoInsuficienteException
+	 * @throws ContaJaCadastradaException
+	 * @throws ValorInvalidoException
+	 * @author PedroPC
+	 */
+	//@Ignore("Falha conhecida registrada em issue")
+	@Test(expected = TransferenciaInvalidaException.class)
+	public void transferir_ContasIguais_LevantamentoExcecao() throws RepositorioException,
+			SaldoInsuficienteException, ContaJaCadastradaException, ValorInvalidoException {
+
+		ContaAbstrata conta1 = new Conta("1", 100);
+		banco.cadastrar(conta1);
+		banco.transferir(conta1, conta1, 50);
+	
 	}
 
 
